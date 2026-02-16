@@ -1,4 +1,4 @@
-import transporter from "../../utils/sendemail";
+import transporter from "../../utils/sendemail.js";
 
 export const sendOtp = async (otp_code: string, email_to: string) => {
     try{
@@ -6,7 +6,6 @@ export const sendOtp = async (otp_code: string, email_to: string) => {
             from: process.env.MAIL_USERNAME,
             to: email_to,
             subject: "Bienvenido a Tikme",
-            text: "Tu código de verificación es: ",
             html: `
             <html>
             <body style="font-family: Arial, sans-serif;">

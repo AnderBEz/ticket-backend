@@ -17,6 +17,8 @@ model User {
   id String @id @default(uuid())
   full_name String
   email String @unique
+  curp String @unique
+  is_new_user Boolean @default(true)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }

@@ -1,5 +1,5 @@
 import jwt, { Secret, SignOptions } from 'jsonwebtoken';
-import { JWTPayload } from "../../interfaces/user.interface";
+import { JWTPayload } from "../../interfaces/user.interface.js";
 import dotenv from 'dotenv';
 
 dotenv.config();
