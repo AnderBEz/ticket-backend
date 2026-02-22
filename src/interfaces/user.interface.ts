@@ -7,7 +7,7 @@ export interface IUser{
 }
 
 export interface AccessTokenPayload {
-    userID: string;
+    user_id: string;
     email: string;
 }
 

@@ -4,7 +4,7 @@ export class AuthService {
     async completeRegister(data: {email: string, curp: string, full_name: string}) {
         const { email, curp, full_name } = data;
 
-        return prisma.tik_user.create({
+        return prisma.user.create({
             data: {
                 email,
                 curp,
@@ -14,7 +14,7 @@ export class AuthService {
     }
 
     async findUserByEmail(email: string) {
-        return prisma.tik_user.findUnique({
+        return prisma.user.findUnique({
             where: {
                 email
             }
@@ -22,3 +22,5 @@ export class AuthService {
     }
 
 }
+
+export default new AuthService();
