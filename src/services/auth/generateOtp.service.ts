@@ -6,7 +6,3 @@ export const generateTotp = () => {
 
     return { secret, totp };
 }
-
-export const verifyTotp = (token: string, secret: string): Boolean => {
-    return verify({ token, secret})
-}
