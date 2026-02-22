@@ -10,3 +10,9 @@ export interface JWTPayload {
     userID: string;
     email: string;
 }
+
+
+export interface OtpTokenPayload {
+    email: string;
+    secret: string;
+}

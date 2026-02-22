@@ -14,18 +14,74 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  full_name String
-  email String @unique
-  curp String @unique
-  is_new_user Boolean @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id          String   @id @default(uuid())
+  email       String   @unique
+  curp        String   @unique
+  full_name   String
+  is_new_user Boolean  @default(true)
+  created_at  DateTime @default(now())
+
+  // Relación: Un usuario tiene muchos tickets
+  tickets Ticket[]
+
+  @@map("tik_users")
 }
 
+// 2. TIPOS DE EVENTO (Catálogo)
+model EventType {
+  id   String @id @default(uuid())
+  name String
+
+  // Relación: Un tipo de evento tiene muchos eventos asociados
+  events Event[]
+
+  @@map("tik_event_types")
+}
+
+// 3. EVENTOS
+// Nota: Cambié "Events" a "Event" (singular) por convención de Prisma
+model Event {
+  id           String   @id @default(uuid())
+  name         String
+  description  String
+  date         DateTime
+  location     String  
+  capacity     Int
+  price        Float
+  
+  // FK hacia EventType
+  eventTypeId  String   @map("event_type_id")
+  eventType    EventType @relation(fields: [eventTypeId], references: [id])
+
+  // Relación: Un evento tiene muchos tickets vendidos
+  tickets      Ticket[]
+
+  @@map("tik_events")
+}
+
+// 4. TICKETS
 model Ticket {
-  id        String   @id @default(uuid())
-  folio     String   @unique
-  precio    Float
-  eventoId  String
+  id        String       @id @default(uuid())
+  folio     String       @unique // Para generar QRs o referencias
+  pricePaid Float        @map("price_paid") // Precio histórico
+  status    TicketStatus @default(PAID) // Usamos un Enum para control
+  createdAt DateTime     @default(now()) @map("created_at")
+
+  // FK hacia Event (¿Qué evento es?)
+  eventId   String  @map("event_id")
+  event     Event   @relation(fields: [eventId], references: [id])
+
+  // FK hacia User (¿Quién lo compró?) - ESTO FALTABA
+  userId    String  @map("user_id")
+  user      User    @relation(fields: [userId], references: [id])
+
+  @@map("tik_tickets")
+}
+
+// DEFINICIÓN DE ENUMS
+enum TicketStatus {
+  PAID
+  USED
+  REFUNDED
+  CANCELLED
 }

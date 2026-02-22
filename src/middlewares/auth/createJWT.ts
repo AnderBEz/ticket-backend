@@ -1,14 +1,17 @@
-import jwt, { Secret, SignOptions } from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 import { JWTPayload } from "../../interfaces/user.interface.js";
-import dotenv from 'dotenv';
-
+import { OtpTokenPayload } from "../../interfaces/user.interface.js";
 dotenv.config();
 
-const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || 'clave_secreta_provisional';
 
-export const generateToken = (
-    payload: JWTPayload, 
-    expiresIn: SignOptions['expiresIn'] = '1h'
-): string => {
-    return jwt.sign(payload, JWT_SECRET_KEY, { expiresIn });
+const SECRET = process.env.SECRET_KEY as string;
+
+
+export const generateToken = (payload: JWTPayload) => {
+    return jwt.sign(payload, SECRET, { expiresIn: "1h" });
+}
+
+export const generateOtpToken = (payload: OtpTokenPayload) => {
+    return jwt.sign(payload, SECRET, { expiresIn: "5m" });
 }
