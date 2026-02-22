@@ -6,7 +6,7 @@ export interface IUser{
     updated_at: Date;
 }
 
-export interface JWTPayload {
+export interface AccessTokenPayload {
     userID: string;
     email: string;
 }

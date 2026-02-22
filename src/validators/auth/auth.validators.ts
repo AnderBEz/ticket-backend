@@ -1,8 +1,8 @@
-import { email, z } from "zod";
+import { z } from "zod";
 
 export const sendOtpSchema = z.object({
     email: z.string().email("Invalid email address"),
-});  
+}).strict();  
 
 export const verifyOtpSchema = z.object({
     otp_code: z.string().length(6, "OTP code must be exactly 6 characters long"),
