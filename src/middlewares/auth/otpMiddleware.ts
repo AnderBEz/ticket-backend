@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { verifyOtpToken } from "./createJWT.js";
-import { OtpTokenPayload } from "../../interfaces/user.interface.js";
+import { AccessTokenPayload, OtpTokenPayload } from "../../interfaces/user.interface.js";
 
 declare global {
     namespace Express {
         interface Request {
-            user?: { userId: number; email: string; } | OtpTokenPayload;
+            user?: AccessTokenPayload | OtpTokenPayload;
         }
     }
 }

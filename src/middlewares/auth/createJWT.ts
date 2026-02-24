@@ -8,10 +8,17 @@ dotenv.config();
 const SECRET = process.env.SECRET_KEY as string;
 
 
+//Funciones para Access Token
 export const generateAcccessToken = (payload: AccessTokenPayload) => {
     return jwt.sign(payload, SECRET, { expiresIn: "1h" });
 }
 
+export const verifyAccessToken = (token: string): AccessTokenPayload => {
+    return jwt.verify(token, SECRET) as AccessTokenPayload;
+}
+
+
+// Funciones para OTP
 export const generateOtpToken = (payload: OtpTokenPayload) => {
     return jwt.sign(payload, SECRET, { expiresIn: "5m" });
 }

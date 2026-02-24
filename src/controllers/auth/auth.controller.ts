@@ -5,7 +5,7 @@ import { generateSecret, generate, verify, generateURI } from "otplib";
 import { generateAcccessToken, generateOtpToken, verifyOtpToken } from "../../middlewares/auth/createJWT.js";
 import  AuthService from "../../services/auth/auth.service.js";
 import { OtpTokenPayload } from "../../interfaces/user.interface.js";
-import { ca } from "zod/locales";
+import { AccessTokenPayload } from "../../interfaces/user.interface.js";
 
 
 export class AuthController {
@@ -96,7 +96,24 @@ export class AuthController {
         }
     }
 
-    
+    async getMe(req: Request, res: Response) {
+        const payload = req.user as AccessTokenPayload;
+
+        const user = await AuthService.findUserById(payload.user_id);
+
+        if (!user) {
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+        
+        return res.status(200).json({
+            id: user.id,
+            full_name: user.full_name,
+            email: user.email,
+            created_at: user.created_at,
+        });
+    }
+
+
 }
 
 export default new AuthController();
