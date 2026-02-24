@@ -21,6 +21,14 @@ export class AuthService {
         })
     }
 
+    async findUserById(id: string) {
+        return prisma.user.findUnique({
+            where: {
+                id
+            }
+        })
+    }
+
 }
 
 export default new AuthService();

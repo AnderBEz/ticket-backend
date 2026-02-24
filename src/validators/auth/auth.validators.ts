@@ -9,7 +9,6 @@ export const verifyOtpSchema = z.object({
 });
 
 export const completeRegisterSchema = z.object({
-    email: z.string().email("Invalid email address"),
     curp : z.string().length(18, "CURP must be exactly 18 characters long"),
     full_name: z.string().min(1, "Full name is required"),
 })

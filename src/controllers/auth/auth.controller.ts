@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
-import { sendOtpSchema, verifyOtpSchema } from "../../validators/auth/auth.validators.js";
+import { completeRegisterSchema, sendOtpSchema, verifyOtpSchema } from "../../validators/auth/auth.validators.js";
 import { sendOtp } from "../../services/auth/sendotp.service.js";
 import { generateSecret, generate, verify, generateURI } from "otplib";
 import { generateAcccessToken, generateOtpToken, verifyOtpToken } from "../../middlewares/auth/createJWT.js";
 import  AuthService from "../../services/auth/auth.service.js";
 import { OtpTokenPayload } from "../../interfaces/user.interface.js";
+import { ca } from "zod/locales";
 
 
 export class AuthController {
@@ -59,9 +60,43 @@ export class AuthController {
     return res.status(200).json({
         message: "OTP verificado. Bienvenido de nuevo.",
         is_new_user: false,
-        access_token: generateAcccessToken({ user_id: user.id, email: user.email })
+        access_token: generateAcccessToken({ user_id: user.id })
     });
-}
+    }
+
+    async completeRegister(req: Request, res: Response) {
+        const result = completeRegisterSchema.safeParse(req.body);
+        
+        if (!result.success) {
+            return res.status(400).json({ message: "Datos invalidos" });
+        }
+
+        const payload = req.user as OtpTokenPayload;
+
+        const exists = await AuthService.findUserByEmail(payload.email)
+
+        if (exists) {
+            return res.status(400).json({ message: "Usuario ya registrado" });
+        }
+
+        try {
+            const newUser = await AuthService.completeRegister({
+                email: payload.email,
+                curp: result.data.curp,
+                full_name: result.data.full_name
+            })
+
+            return res.status(201).json({
+                message: "Registro completado",
+                access_token: generateAcccessToken({ user_id: newUser.id })
+            });
+        } catch (error) {
+            console.error("Error al completar el registro:", error);
+            return res.status(500).json({ message: "Error al completar el registro" });
+        }
+    }
+
+    
 }
 
 export default new AuthController();

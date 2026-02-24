@@ -8,7 +8,6 @@ export interface IUser{
 
 export interface AccessTokenPayload {
     user_id: string;
-    email: string;
 }
 
 

@@ -13,4 +13,8 @@ router.post("/verify-otp", otpMiddleware, async (req: Request, res: Response) =>
     await AuthController.verifyTotp(req, res);
 })
 
+router.post("/complete-register", otpMiddleware, async (req: Request, res: Response) => {
+    await AuthController.completeRegister(req, res);
+})
+
 export default router;
