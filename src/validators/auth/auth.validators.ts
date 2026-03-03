@@ -11,4 +11,5 @@ export const verifyOtpSchema = z.object({
 export const completeRegisterSchema = z.object({
     curp : z.string().length(18, "CURP must be exactly 18 characters long"),
     full_name: z.string().min(1, "Full name is required"),
+    estado: z.string().min(2, "Estado is required"),
 })

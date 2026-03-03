@@ -83,7 +83,8 @@ export class AuthController {
             const newUser = await AuthService.completeRegister({
                 email: payload.email,
                 curp: result.data.curp,
-                full_name: result.data.full_name
+                full_name: result.data.full_name,
+                estado: result.data.estado
             })
 
             return res.status(201).json({
