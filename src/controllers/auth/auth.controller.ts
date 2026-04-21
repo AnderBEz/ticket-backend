@@ -42,9 +42,9 @@ export class AuthController {
 
     const payload = req.user as OtpTokenPayload;
 
-    const isValid = verify({ token: result.data.otp_code, secret: payload.secret, period: 300 });
+    const otpResult = await verify({ token: result.data.otp_code, secret: payload.secret, period: 300 });
 
-    if (!isValid) {
+    if (!otpResult.valid) {
         return res.status(401).json({ message: "OTP inválido" });
     }
 

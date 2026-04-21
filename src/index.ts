@@ -2,6 +2,8 @@ import express, { Application,  } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import authRouter from "./routers/auth/auth.router.js"
+import ticketsRouter from "./routers/tickets/tickets.router.js";
+import eventsRouter from "./routers/events/events.router.js";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./utils/swagger.js";
 dotenv.config();
@@ -13,7 +15,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.use("/auth/tikme/",authRouter);
+app.use("/auth/tikme/", authRouter);
+app.use("/tickets", ticketsRouter);
+app.use("/events", eventsRouter);
 
 app.listen(PORT, () => {
     console.log(`localhost://${PORT}`);
