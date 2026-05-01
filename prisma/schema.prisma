@@ -159,6 +159,7 @@ model PaymentMethod {
   card_number  String?
   cardholder   String?
   paypal_email String?
+  whatsapp_phone String?
 
   orderId String @unique @map("order_id")
   order   Order  @relation(fields: [orderId], references: [id])

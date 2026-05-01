@@ -69,6 +69,26 @@ export class EventsService {
             service_type: s.service_type === "FOUR_DX" ? "4DX" : s.service_type,
         }));
     }
+
+    async getSeatsByShowtime(showtimeId: string) {
+    return prisma.seat.findMany({
+        where: { showtimeId },
+        orderBy: [{ row: "asc" }, { number: "asc" }],
+        select: {
+            id: true,
+            label: true,
+            row: true,
+            number: true,
+            section: true,
+            price: true,
+            status: true,
+        },
+    });
+  }
+
+  async getShowtimeById(id: string) {
+    return prisma.showtime.findUnique({ where: { id } });
+  }
 }
 
 export default new EventsService();

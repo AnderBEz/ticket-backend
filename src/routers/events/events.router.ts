@@ -74,4 +74,8 @@ router.get("/:id/showtimes", async (req, res) => {
     await EventsController.getShowtimes(req, res);
 });
 
+router.get("/:id/showtimes/:showtimeId/seats", async (req, res) => {
+    await EventsController.getSeats(req, res);
+});
+
 export default router;

@@ -42,6 +42,21 @@ export class EventsController {
             return res.status(500).json({ message: "Error al obtener funciones" });
         }
     }
+
+    async getSeats(req: Request, res: Response) {
+    const showtimeId = String(req.params.showtimeId);
+
+    try {
+        const showtime = await EventsService.getShowtimeById(showtimeId);
+        if (!showtime) return res.status(404).json({ message: "Función no encontrada" });
+
+        const seats = await EventsService.getSeatsByShowtime(showtimeId);
+        return res.status(200).json(seats);
+    } catch (error) {
+        console.error("Error fetching seats:", error);
+        return res.status(500).json({ message: "Error al obtener asientos" });
+    }
+}
 }
 
 export default new EventsController();
