@@ -3,6 +3,7 @@ import OrdersService from "../../services/orders/orders.service.js";
 import { sendTicketEmail } from "../../services/orders/send-orderemail.service.js";
 import QRCode from "qrcode";
 import { AccessTokenPayload } from "../../interfaces/user.interface.js";
+import { sendWhatsAppTicket } from "../../services/orders/send-whatsapp.service.js";
 
 export class OrdersController {
   async createOrder(req: Request, res: Response) {
@@ -94,6 +95,18 @@ export class OrdersController {
         qrCodes: tickets.map((t) => t.qr_code ?? ""),
         qrBuffers,
       }).catch((e) => console.error("Error enviando email:", e));
+
+      if (whatsapp_phone) {
+        sendWhatsAppTicket({
+          to: whatsapp_phone,
+          eventName: order.showtime.event.name,
+          venue: order.showtime.venue_name,
+          datetime,
+          seats: seatLabels,
+          total: order.total,
+          folio: tickets[0]?.folio ?? "",
+        }).catch((e) => console.error("Error enviando WhatsApp:", e));
+      }
 
       return res.status(200).json({
         message: "Pago exitoso",
