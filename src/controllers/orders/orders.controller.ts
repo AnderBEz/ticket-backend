@@ -2,10 +2,12 @@ import { Request, Response } from "express";
 import OrdersService from "../../services/orders/orders.service.js";
 import { sendTicketEmail } from "../../services/orders/send-orderemail.service.js";
 import QRCode from "qrcode";
+import { AccessTokenPayload } from "../../interfaces/user.interface.js";
 
 export class OrdersController {
   async createOrder(req: Request, res: Response) {
-    const { userId, showtimeId, seatIds } = req.body;
+    const { showtimeId, seatIds } = req.body;
+    const userId = (req.user as AccessTokenPayload).user_id;
 
     if (
       !userId ||
@@ -70,26 +72,28 @@ export class OrdersController {
         },
       );
       const qrBuffers = await Promise.all(
-    tickets.map((t) =>
-        QRCode.toBuffer(JSON.stringify({
-            folio: t.folio,
-            asiento: t.seatId,
-        }))
-    )
-);
+        tickets.map((t) =>
+          QRCode.toBuffer(
+            JSON.stringify({
+              folio: t.folio,
+              asiento: t.seatId,
+            }),
+          ),
+        ),
+      );
 
       sendTicketEmail({
-    to: order.user.email,
-    fullName: order.user.full_name,
-    eventName: order.showtime.event.name,
-    venue: order.showtime.venue_name,
-    datetime,
-    seats: seatLabels,
-    total: order.total,
-    folio: tickets[0]?.folio ?? "",
-    qrCodes: tickets.map((t) => t.qr_code ?? ""),
-    qrBuffers,
-}).catch((e) => console.error("Error enviando email:", e));
+        to: order.user.email,
+        fullName: order.user.full_name,
+        eventName: order.showtime.event.name,
+        venue: order.showtime.venue_name,
+        datetime,
+        seats: seatLabels,
+        total: order.total,
+        folio: tickets[0]?.folio ?? "",
+        qrCodes: tickets.map((t) => t.qr_code ?? ""),
+        qrBuffers,
+      }).catch((e) => console.error("Error enviando email:", e));
 
       return res.status(200).json({
         message: "Pago exitoso",
