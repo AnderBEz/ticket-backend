@@ -105,7 +105,13 @@ export class OrdersController {
           seats: seatLabels,
           total: order.total,
           folio: tickets[0]?.folio ?? "",
-        }).catch((e) => console.error("Error enviando WhatsApp:", e));
+        }).catch((e) => {
+          const code = e?.code ?? e?.status ?? "UNKNOWN";
+          console.error(
+            `WhatsApp error [${code}] para ${whatsapp_phone}:`,
+            e?.message ?? e,
+          );
+        });
       }
 
       return res.status(200).json({

@@ -52,9 +52,25 @@ export const sendWhatsAppTicket = async (data: WhatsAppTicketData) => {
 
 ¡Disfruta el evento! 🎉`;
 
-    await client.messages.create({
-        from: process.env.TWILIO_WHATSAPP_FROM!,
-        to: `whatsapp:${normalizedTo}`,
-        body: message,
-    });
+    try {
+        await client.messages.create({
+            from: process.env.TWILIO_WHATSAPP_FROM!,
+            to: `whatsapp:${normalizedTo}`,
+            body: message,
+        });
+    } catch (error: any) {
+        // Códigos de error conocidos de Twilio
+        const twilioErrors: Record<number, string> = {
+            21211: "Número de teléfono inválido",
+            21614: "Número no es WhatsApp o no está registrado",
+            21408: "Permiso denegado para esta región",
+            63003: "Canal de WhatsApp no disponible",
+            63016: "Número no ha activado el sandbox de WhatsApp",
+        };
+
+        const msg = twilioErrors[error?.code] ?? `Error desconocido (${error?.code})`;
+        console.error(`WhatsApp no entregado a ${normalizedTo}: ${msg}`);
+
+        throw new Error(`WHATSAPP_ERROR: ${msg}`);
+    }
 };
